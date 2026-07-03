@@ -17,9 +17,7 @@ DBconnect();
 // Allow Authorization header from the frontend and enable credentials
 app.use(
   cors({
-    origin:[ "http://localhost:5173",
-            "https://expenses-tracker-kabi.vercel.app"
-        ], 
+    origin:"*",
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
   })
