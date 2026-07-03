@@ -14,27 +14,17 @@ const PORT = 5000;
 
 DBconnect();
 
-const allowedOrigins = [
-  process.env.ORIGIN,
-  "http://localhost:5173",
-].filter(Boolean);
-
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error(`CORS policy blocked access from origin ${origin}`));
-    }
-  },
-  credentials: true,
-  allowedHeaders: ["Content-Type", "Authorization"],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  optionsSuccessStatus: 200,
-};
-
-app.use(cors(corsOptions));
+// Allow Authorization header from the frontend and enable credentials
+app.use(
+  cors({
+    origin:[ "http://localhost:5173",
+            "https://expenses-tracker-kabi.vercel.app"
+        ], 
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+// Preflight handling is covered by the CORS middleware above
 app.use(express.json());
 
 app.use("/api", router);
