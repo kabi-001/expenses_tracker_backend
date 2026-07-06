@@ -20,6 +20,7 @@ app.use(
     origin:"*",
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
+    methods:"*"
   })
 );
 // Preflight handling is covered by the CORS middleware above
