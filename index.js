@@ -5,9 +5,9 @@ import { DBconnect } from "./config/db.connection.js";
 import router from "./router/router.user.js";
 import { transporter } from "./lib/nodemail.js";
 import expenserouter from "./router/expense.router.js";
-
+import dns from "dns";
 dotenv.config();
-
+dns.setDefaultResultOrder("ipv4first");
 const app = express();
 
 const PORT = 5000;
