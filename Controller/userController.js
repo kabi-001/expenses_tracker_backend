@@ -135,76 +135,80 @@ export const userLogin = async (req,res)=>{
       userData.otp=otp;
        userData.otpExpire= new Date(Date.now() + 4.5 * 60 * 1000); 
        await userData.save();
-        await transporter.sendMail({
-          from: process.env.SMTP_EMAIL,
-          to: userData.email,
-          subject: "OTP for login",
-          text: "Your OTP has been sent to your email",
-          html: `<div style="
-        max-width:600px;
-        margin:auto;
-        font-family:'Segoe UI',sans-serif;
-        background:#ffffff;
-        border-radius:20px;
-        overflow:hidden;
-        box-shadow:0 10px 30px rgba(0,0,0,0.1);
-      ">
-
-        <div style="
-          background:linear-gradient(135deg,#4f46e5,#7c3aed);
-          padding:30px;
-          text-align:center;
-          color:white;
+        try {
+          await transporter.sendMail({
+            from: process.env.SMTP_EMAIL || 'no-reply@example.com',
+            to: userData.email,
+            subject: "OTP for login",
+            text: "Your OTP has been sent to your email",
+            html: `<div style="
+          max-width:600px;
+          margin:auto;
+          font-family:'Segoe UI',sans-serif;
+          background:#ffffff;
+          border-radius:20px;
+          overflow:hidden;
+          box-shadow:0 10px 30px rgba(0,0,0,0.1);
         ">
-          <h1>Expense Tracker</h1>
-          <p>Secure Login Verification</p>
-        </div>
 
-        <div style="padding:40px;">
-          <h2>Hello 👋</h2>
-
-          <p>
-            We received a login request for your account.
-            Use the OTP below to continue.
-          </p>
-
-          <div style="text-align:center;margin:30px 0;">
-            <span style="
-              background:#eef2ff;
-              color:#4f46e5;
-              padding:18px 35px;
-              border-radius:15px;
-              font-size:34px;
-              font-weight:bold;
-              letter-spacing:8px;
-            ">
-              ${otp}
-            </span>
+          <div style="
+            background:linear-gradient(135deg,#4f46e5,#7c3aed);
+            padding:30px;
+            text-align:center;
+            color:white;
+          ">
+            <h1>Expense Tracker</h1>
+            <p>Secure Login Verification</p>
           </div>
 
-          <p style="color:red;font-weight:bold;">
-            OTP expires in 5 minutes
-          </p>
+          <div style="padding:40px;">
+            <h2>Hello 👋</h2>
 
-          <p>
-            If you didn't request this login,
-            please ignore this email.
-          </p>
-        </div>
+            <p>
+              We received a login request for your account.
+              Use the OTP below to continue.
+            </p>
 
-        <div style="
-          background:#f9fafb;
-          text-align:center;
-          padding:20px;
-          color:#888;
-        ">
-          © 2026 Expense Tracker
-        </div>
+            <div style="text-align:center;margin:30px 0;">
+              <span style="
+                background:#eef2ff;
+                color:#4f46e5;
+                padding:18px 35px;
+                border-radius:15px;
+                font-size:34px;
+                font-weight:bold;
+                letter-spacing:8px;
+              ">
+                ${otp}
+              </span>
+            </div>
 
-      </div>`,
-        });
-        console.log("Email sent successfully to:", userData.email);
+            <p style="color:red;font-weight:bold;">
+              OTP expires in 5 minutes
+            </p>
 
+            <p>
+              If you didn't request this login,
+              please ignore this email.
+            </p>
+          </div>
+
+          <div style="
+            background:#f9fafb;
+            text-align:center;
+            padding:20px;
+            color:#888;
+          ">
+            © 2026 Expense Tracker
+          </div>
+
+        </div>`,
+          });
+          console.log("Email sent successfully to:", userData.email);
+        } catch (mailErr) {
+          console.error("Failed to send OTP email:", mailErr);
+          return res.status(500).json({ message: "Failed to send OTP email", success: false, error: String(mailErr) });
+        }
 
           return res.status(200).json({  message: "OTP sent successfully",
   success: true,
@@ -218,8 +222,8 @@ export const userLogin = async (req,res)=>{
 
     }
   } catch (error) {
-    return res.status(500).json({ message: 'Something went wrong', success: false });
     console.log("show error======>>>.",error);
+    return res.status(500).json({ message: 'Something went wrong', success: false });
   }
     
 }
