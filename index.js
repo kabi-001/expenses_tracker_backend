@@ -7,6 +7,8 @@ import { transporter } from "./lib/nodemail.js";
 import expenserouter from "./router/expense.router.js";
 import dns from "dns";
 dotenv.config();
+console.log("SMTP_EMAIL:", process.env.SMTP_EMAIL);
+console.log("SMTP_PASS:", process.env.SMTP_PASS ? "Loaded" : "Not Loaded");
 dns.setDefaultResultOrder("ipv4first");
 const app = express();
 
